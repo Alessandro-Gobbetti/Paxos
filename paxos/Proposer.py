@@ -24,7 +24,7 @@ class Proposer:
         self.r.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF,
                           2**25)  # 32MB buffer
 
-        self.MAX_PROPOSERS = 4
+        self.MAX_PROPOSERS = 8
 
         self.v = None
         self.c_rnd = self.id  # unique by incrementing with MAX_PROPOSERS
@@ -167,29 +167,29 @@ class Proposer:
 
                     self.decided_values.append(value)
 
-                    if True or prop_id != self.id:
-                        print("P%d received decision (%s) from P%d" %
-                              (self.id, value, prop_id))
+                    print("P%d received decision (%s) from P%d" %
+                          (self.id, value, prop_id))
 
-                        # another proposer has decided on a value, so we can remove it from our values
-                        print("P%d values %s" %
-                              (self.id, [value, self.v, value == self.v]))
-                        if value in self.values:
-                            self.values.remove(value)
-                            print("P%d removed value %s" % (self.id, value))
-                        if value == self.v:
-                            self.v = None
-                            self.c_val = None
-                            self.new_round()
-                            if self.retry_timer is not None:
-                                print("P%d cancelling retry timer" % self.id)
-                                self.should_retry = False
-                            if self.values:
-                                self.v = self.values.pop(0)
-                                print("P%d starting new round with value %s" %
-                                      (self.id, self.v))
-                                self.send_phase_1a()
-                            print("P%d value %s" % (self.id, self.v))
+                    # another proposer has decided on a value, so we can remove it from our values
+                    print("P%d values %s" %
+                          (self.id, [value, self.v, value == self.v]))
+                    if value in self.values:
+                        self.values.remove(value)
+                        print("P%d removed value %s" % (self.id, value))
+                    if value == self.v:
+                        # stop this execution, another proposer has decided on our value
+                        self.v = None
+                        self.c_val = None
+                        self.new_round()
+                        if self.retry_timer is not None:
+                            print("P%d cancelling retry timer" % self.id)
+                            self.should_retry = False
+                        if self.values:
+                            self.v = self.values.pop(0)
+                            print("P%d starting new round with value %s" %
+                                  (self.id, self.v))
+                            self.send_phase_1a()
+                        print("P%d value %s" % (self.id, self.v))
                 case _:
                     print("-------Proposer ignoring message:", msg)
 
