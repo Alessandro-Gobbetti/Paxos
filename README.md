@@ -46,10 +46,12 @@ The `id` is the unique identifier for the role, and the `config` is the path to 
 
 The configuration file paxos.conf specifies the multicast addresses and ports for each role:
 
+```
 clients 239.0.0.1 5000
 proposers 239.0.0.1 6000
 acceptors 239.0.0.1 7000
 learners 239.0.0.1 8000
+```
 
 ## Running the Tests
 
