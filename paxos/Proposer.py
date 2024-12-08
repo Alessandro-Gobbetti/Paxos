@@ -149,6 +149,7 @@ class Proposer:
                                   (self.id, v_val))
                             self.send_decision(v_val)
                             self.prev_decision_rnd = self.c_rnd
+                            self.should_retry = False
 
                             if self.values:
                                 # start a new round with the next value
