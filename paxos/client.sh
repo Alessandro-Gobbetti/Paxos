@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-./paxos.py "$2" client "$1"
+./Client.py "$2" "$1"
