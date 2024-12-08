@@ -1,40 +1,14 @@
 #!/usr/bin/env python3
 import sys
 import socket
-import struct
 import json
-import threading
 import time
 from utils import *
 import random
 
-# threads
-from threading import Thread
-
 
 ACCEPTOR_COUNT = 3
 QUORUM = ACCEPTOR_COUNT // 2 + 1
-
-# automatically flush stdout
-
-
-class Unbuffered:
-    def __init__(self, stream):
-        self.stream = stream
-
-    def write(self, data):
-        self.stream.write(data)
-        self.stream.flush()
-
-    def writelines(self, datas):
-        self.stream.writelines(datas)
-        self.stream.flush()
-
-    def __getattr__(self, attr):
-        return getattr(self.stream, attr)
-
-
-sys.stdout = Unbuffered(sys.stdout)
 
 
 class Proposer:
@@ -55,9 +29,6 @@ class Proposer:
         self.v = None
         self.c_rnd = self.id  # unique by incrementing with MAX_PROPOSERS
         self.c_val = None
-        # self.rnd = 0
-        # self.v_round = 0
-        # self.v_val = None
 
         self.values = []
 
@@ -106,12 +77,6 @@ class Proposer:
         self.should_retry = (round, val)
         print("P%d starting quorum timer for round %d with value %s" %
               (self.id, round, val))
-        # if self.retry_timer is not None:
-        #     self.retry_timer.cancel()
-        #     self.retry_timer = None
-        # self.retry_timer = threading.Timer(
-        #     timeout, self.set_retry, args=[round, val])
-        # self.retry_timer.start()
 
     def retry(self, round, value):
         if round == self.c_rnd and self.accepted_count < QUORUM:

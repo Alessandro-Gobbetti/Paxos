@@ -1,30 +1,7 @@
 #!/usr/bin/env python3
 import sys
-import socket
-import struct
 import json
 from utils import *
-
-# automatically flush stdout
-
-
-class Unbuffered:
-    def __init__(self, stream):
-        self.stream = stream
-
-    def write(self, data):
-        self.stream.write(data)
-        self.stream.flush()
-
-    def writelines(self, datas):
-        self.stream.writelines(datas)
-        self.stream.flush()
-
-    def __getattr__(self, attr):
-        return getattr(self.stream, attr)
-
-
-sys.stdout = Unbuffered(sys.stdout)
 
 
 class Acceptor:
@@ -41,10 +18,6 @@ class Acceptor:
 
     def send_phase_1b(self):
         msg = json.dumps((MsgType.PHASE_1B, self.rnd, self.v_rnd, self.v_val))
-        self.s.sendto(msg.encode(), self.config["proposers"])
-
-    def send_phase_1b_nack(self):
-        msg = json.dumps((MsgType.NACK, self.rnd))
         self.s.sendto(msg.encode(), self.config["proposers"])
 
     def send_phase_2b(self):
@@ -65,9 +38,6 @@ class Acceptor:
                         self.rnd = c_rnd
                         self.send_phase_1b()
 
-                    # else:
-                    #     # send a nack
-                    #     self.send_phase_1b_nack()
                 case MsgType.PHASE_2A:
                     print("\tA%d PHASE_2A: %s" % (self.id, msg))
                     _, c_rnd, c_val = msg

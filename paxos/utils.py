@@ -17,14 +17,6 @@ class MsgType:
     CATCHUP_REQ = 7
 
 
-# # variables for the paxos algorithm
-# c_rnd = 0       # highest-numbered round the proposes has started
-# c_val = None    # value the process has picked for round c_rnd
-# rnd = 0         # highest-numbered round the acceptor has participated
-# v_round = 0     # highest-numbered round the acceptor has cast a vote
-# v_val = None    # value voted by the acceptor in round v_round
-
-
 def mcast_receiver(hostport):
     """create a multicast socket listening to the address"""
     recv_sock = socket.socket(
